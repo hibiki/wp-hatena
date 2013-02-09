@@ -5,7 +5,7 @@ Plugin URI: http://wppluginsj.sourceforge.jp/wp-hatena-extended/
 Description: エントリにはてなブックマーク等に追加するリンクタグなどを挿入します。
 Author: <a href="http://another.maple4ever.net/">hiromasa</a> (拡張版 <a href="http://wp.graphact.com/">hibiki</a>)
 Extended version Author: inocco (hibiki)
-Versionin: 1.4 ( Base wp-hatena Version: 0.93j )
+Versionin: 1.5 ( Base wp-hatena Version: 0.93j )
 Special Thanks: Castaway. (http://bless.babyblue.jp/wp/)
 Bug Report: Masayan (http://wp.mmrt-jp.net/)
 Bug Report: kohaku (http://aoiro-blog.com/)
@@ -36,18 +36,6 @@ Extended version Special Thanks: dogmap.jp (http://dogmap.jp/)
  *   del.icio.usの場合 : <?php if(isset($wph)) $wph->adddelicious(); ?>
  *  を挿入してください。
  *****************************************************************************/
-
-/******************************************************************************
- * WpHatena function define.
- *****************************************************************************/
-//if(class_exists('WpHatena')) {
-//	
-//	$wph = & new WpHatena();
-//	
-//	// JavaScript 画像説明ポップアップ用
-//	// add_action('wp_head', array(&$wph, 'addScript'));
-//	
-//}
 
 /******************************************************************************
  * 管理画面
@@ -94,9 +82,10 @@ function WpHatenaPluginView()
 			<th>はてなブックマーク<br />表示タイプ</th>
 			<td>
 			<select id="wph_hatebu_type" name="wph_hatebu_type">
-			<option value="standard"<?php if($wph_hatebu_type=='standard'){ echo ' selected="selected"';} ?>>スタンダード (B!＋ブックマーク数を表示)</option>
-			<option value="vertical"<?php if($wph_hatebu_type=='vertical'){ echo ' selected="selected"';} ?>>バーティカル (大きめのサイズでB!＋ブックマーク数を表示)</option>
+			<option value="standard-balloon"<?php if($wph_hatebu_type=='standard-balloon'){ echo ' selected="selected"';} ?>>スタンダード (B!＋ブックマーク数を表示)</option>
+			<option value="vertical-balloon"<?php if($wph_hatebu_type=='vertical-balloon'){ echo ' selected="selected"';} ?>>バーティカル (大きめのサイズでB!＋ブックマーク数を表示)</option>
 			<option value="simple"<?php if($wph_hatebu_type=='simple'){ echo ' selected="selected"';} ?>>シンプル (B!のみでブックマーク数は表示されません）</option>
+			<option value="simple-balloon"<?php if($wph_hatebu_type=='simple-balloon'){ echo ' selected="selected"';} ?>>シンプル (B!＋ブックマーク数を表示）</option>
 			</select>
 			<br />独自アイコンを利用したい場合は、シンプルを選択してください
 			</td>
@@ -561,24 +550,24 @@ class WpHatena {
 		$permalink = $this->utf8_encode(get_permalink());
 		
 		if ($this->twitter_type=='none') {
-			$twit_css = 'wph';
-			$twit_att = ' onclick="if(window.open(this.href,\'tweetWin\',\'width=550,height=450,personalbar=0,toolbar=0,scrollbars=1,resizable=1\'))return false;"';
+			$twit_css = 'wph twitter-share-button';
+			$twit_att = ' data-url="' . $permalink . '" data-text="' . $title . '" data-count="' . $this->twitter_type . '" data-lang="ja" onclick="if(window.open(this.href,\'tweetWin\',\'width=550,height=450,personalbar=0,toolbar=0,scrollbars=1,resizable=1\'))return false;"';
 		}
 		else {
 			$twit_css = 'wph twitter-share-button';
-			$twit_att = '';
+			$twit_att = ' data-url="' . $permalink . '" data-text="' . $title . '" data-count="' . $this->twitter_type . '" data-lang="ja"';
 		}
 		
 		echo
 			$this->makeTag(
 				//href, class, otheratt, pagetitle, img, alt, script, lazy_loading
-				'http://twitter.com/share?' . 'url=' . urlencode($permalink) . '&amp;text=' . urlencode($title) . '&amp;lang=ja' . '&amp;count=' . $this->twitter_type,
+				'http://twitter.com/share',
 				$twit_css,
 				$twit_att,
 				'urlencode($title)',
 				$this->img_path . 'twitter.gif',
 				'このエントリをつぶやく',
-				'<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>',
+				'<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>',
 				true
 			);
 	}
@@ -847,9 +836,9 @@ class WpHatena {
 	function makeFacebookTag($url) {
 		
 		if ($this->fcbk_type=='button_count') {
-			$height = 21;
+			$height = 20;
 			if ($this->fcbk_width == null) {
-				$this->fcbk_width = 100;
+				$this->fcbk_width = 90;
 			}
 		}
 		elseif ($fcbk_type=='standard') {
@@ -861,13 +850,13 @@ class WpHatena {
 		else {
 			$height = 65;
 			if ($this->fcbk_width == null) {
-				$this->fcbk_width = 55;
+				$this->fcbk_width = 70;
 			}
 		}
 		
 		$tag  = '<iframe';
 		$tag .= ' src="' . $url;
-		$tag .= '&amp;layout=button_count&amp;show_faces=true&amp;width=' . $this->fcbk_width . '&amp;action=like&amp;colorscheme=light&amp;height=' . $height . '" scrolling="no" frameborder="0" class="wph facebook" allowTransparency="true"';
+		$tag .= '&amp;layout=' . $this->fcbk_type . '&amp;show_faces=true&amp;width=' . $this->fcbk_width . '&amp;action=like&amp;colorscheme=light&amp;height=' . $height . '" scrolling="no" frameborder="0" class="wph facebook" allowTransparency="true"';
 		$tag .= ' style="width:' . $this->fcbk_width . 'px; height:' . $height . 'px;"';
 		$tag .= '>';
 		$tag .= '</iframe>';
@@ -941,22 +930,6 @@ class WpHatena {
 		
 		return $text;
 		
-	}
-
-	/**
-	 * WP filter interface.(wp_head)
-	 *  - 未使用 (popup.js 未実装のため) 
-	 * 
-	 * @param none
-	 * @return none (画像説明ポップアップ JavaScript を echo)
-	 */
-	function addScript() {
-		
-		echo '<script src="http://www.google.com/jsapi" type="text/javascript"></script><script type="text/javascript">google.load("jquery", "1.4.2");</script>';
-		echo '<script type="text/javascript"';
-		echo ' src="'. $this->plugin_path . $this->popup_jsname . '"';
-		echo '>';
-		echo '</script>' . "\n";
 	}
 
 	/**
