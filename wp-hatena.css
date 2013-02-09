@@ -1,0 +1,61 @@
+/* for wph */
+.wph {
+	margin: 0 8px 0 0;
+	line-height: 1!important;
+}
+
+.wph img,
+.wph span {
+	border: 0;
+	margin: 0;
+	padding: 0;
+	vertical-align: middle;
+}
+
+.hatena-bookmark-button-frame,
+.twitter-share-button img,
+.twitter-share-button,
+.wph.facebook,
+.wph.mixi-check-button,
+.wph.hatebu-count ,
+.wph.googleplusone-button {
+	border: 0;
+	margin: 0 8px 0 0;
+	padding: 0;
+	vertical-align: middle;
+	line-height: 1;
+}
+
+/* facebook */
+.wph.facebook {
+	overflow:hidden;
+}
+
+/* facebook share */
+.wph.fcbk_share {
+	vertical-align: middle;
+	position: relative;
+	top: -1px;
+}
+
+/* google +1 */
+.wph.googleplusone-button {
+	position: relative;
+	top: 1px;
+}
+
+/* wph count - はてブ ブックマーク数テキスト表示 */
+.wph.hatebu-count {
+	display: inline-block;
+	/display: inline;
+	height: 26px;
+	margin-left: -8px;
+	padding: 0 6px;
+	border: 2px solid #5E77A4;
+	line-height: 26px;
+	text-align: center;
+	font-weight: bold;
+	text-decoration: none;
+	/zoom: 1;
+}
+
