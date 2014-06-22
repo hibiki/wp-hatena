@@ -4,8 +4,8 @@ Plugin Name: wp-hatena 拡張版
 Plugin URI: http://wppluginsj.sourceforge.jp/wp-hatena-extended/
 Description: エントリにはてなブックマーク等に追加するリンクタグなどを挿入します。
 Author: <a href="http://another.maple4ever.net/">hiromasa</a> (拡張版 <a href="http://wp.graphact.com/">hibiki</a>)
-Extended version Author: inocco (hibiki)
-Versionin: 1.5 ( Base wp-hatena Version: 0.93j )
+Extended version Author: hibiki
+Versionin: 1.6 ( Base wp-hatena Version: 0.93j )
 Special Thanks: Castaway. (http://bless.babyblue.jp/wp/)
 Bug Report: Masayan (http://wp.mmrt-jp.net/)
 Bug Report: kohaku (http://aoiro-blog.com/)
@@ -58,17 +58,21 @@ function WpHatenaPluginView()
 	$wph_hatebu_type  = get_option('wph_hatebu_type');
 	$wph_twitter_type = get_option('wph_twitter_type');
 	$wph_fcbk_type    = get_option('wph_fcbk_type');
+	$wph_fcbk_share    = get_option('wph_fcbk_share');
 	$wph_fcbk_width   = get_option('wph_fcbk_width');
 	$wph_googleplusone_size = get_option('wph_googleplusone_size');
 	$wph_googleplusone_displaycounter = get_option('wph_googleplusone_displaycounter');
+	$wph_pckt_type    = get_option('wph_pckt_type');
 
 	// 設定が保存されていない場合用デフォルト値を設定
-	if ($wph_hatebu_type==null) { $wph_hatebu_type  = 'standard'; }
-	if ($wph_twitter_type==null) { $wph_twitter_type = 'none'; }
-	if ($wph_fcbk_type==null) { $wph_fcbk_type = 'button_count'; }
-	if ($wph_fcbk_width==null) { $wph_fcbk_width = '100'; }
-	if ($wph_googleplusone_size==null) { $wph_googleplusone_size = 'default'; }
-	if ($wph_googleplusone_displaycounter==null) { $wph_googleplusone_displaycounter = 'yes'; }
+	if ($wph_hatebu_type == null) { $wph_hatebu_type  = 'standard'; }
+	if ($wph_twitter_type == null) { $wph_twitter_type = 'none'; }
+	if ($wph_fcbk_type == null) { $wph_fcbk_type = 'button_count'; }
+	if ($wph_fcbk_share == null) { $wph_fcbk_share  = 'false'; }
+	if ($wph_fcbk_width == null) { $wph_fcbk_width = ''; }
+	if ($wph_googleplusone_size == null) { $wph_googleplusone_size = 'default'; }
+	if ($wph_googleplusone_displaycounter == null) { $wph_googleplusone_displaycounter = 'yes'; }
+	if ($wph_pckt_type == null) { $wph_pckt_type = 'none'; }
 
 	// 設定変更画面を表示する
 ?>
@@ -82,10 +86,10 @@ function WpHatenaPluginView()
 			<th>はてなブックマーク<br />表示タイプ</th>
 			<td>
 			<select id="wph_hatebu_type" name="wph_hatebu_type">
-			<option value="standard-balloon"<?php if($wph_hatebu_type=='standard-balloon'){ echo ' selected="selected"';} ?>>スタンダード (B!＋ブックマーク数を表示)</option>
-			<option value="vertical-balloon"<?php if($wph_hatebu_type=='vertical-balloon'){ echo ' selected="selected"';} ?>>バーティカル (大きめのサイズでB!＋ブックマーク数を表示)</option>
-			<option value="simple"<?php if($wph_hatebu_type=='simple'){ echo ' selected="selected"';} ?>>シンプル (B!のみでブックマーク数は表示されません）</option>
-			<option value="simple-balloon"<?php if($wph_hatebu_type=='simple-balloon'){ echo ' selected="selected"';} ?>>シンプル (B!＋ブックマーク数を表示）</option>
+			<option value="standard-balloon"<?php if($wph_hatebu_type=='standard-balloon'){ echo ' selected="selected"';} ?>>横長スタンダード (B!＋ブックマーク数を表示)</option>
+			<option value="vertical-balloon"<?php if($wph_hatebu_type=='vertical-balloon'){ echo ' selected="selected"';} ?>>縦長表示 (大きめのサイズでB!＋ブックマーク数を表示)</option>
+			<option value="simple"<?php if($wph_hatebu_type=='simple'){ echo ' selected="selected"';} ?>>ボタンのみ (B!のみでブックマーク数は表示されません）</option>
+			<option value="simple-balloon"<?php if($wph_hatebu_type=='simple-balloon'){ echo ' selected="selected"';} ?>>横長シンプル (B!＋ブックマーク数を表示）</option>
 			</select>
 			<br />独自アイコンを利用したい場合は、シンプルを選択してください
 			</td>
@@ -95,8 +99,8 @@ function WpHatenaPluginView()
 			<th>Tweet ボタン<br />表示タイプ</th>
 			<td>
 			<select id="wph_twitter_type" name="wph_twitter_type">
-			<option value="horizontal"<?php if($wph_twitter_type=='horizontal'){ echo ' selected="selected"';} ?>>スタンダード (つぶやきボタン＋水平方向にカウント数を表示)</option>
-			<option value="vertical"<?php if($wph_twitter_type=='vertical'){ echo ' selected="selected"';} ?>>バーティカル (大きめのサイズでつぶやきボタン＋垂直方向にカウント数を表示)</option>
+			<option value="horizontal"<?php if($wph_twitter_type=='horizontal'){ echo ' selected="selected"';} ?>>横長表示 (つぶやきボタン＋ボタン横にカウント数を表示)</option>
+			<option value="vertical"<?php if($wph_twitter_type=='vertical'){ echo ' selected="selected"';} ?>>縦長表示 (大きめのサイズでつぶやきボタン＋ボタン上にカウント数を表示)</option>
 			<option value="none"<?php if($wph_twitter_type=='none'){ echo ' selected="selected"';} ?>>シンプル (つぶやきボタンのみでカウント数は表示されません）</option>
 			</select>
 			<br />独自アイコンを利用したい場合は、シンプルを選択してください
@@ -131,19 +135,28 @@ function WpHatenaPluginView()
 			<th>Facebook いいね！<br />表示タイプ</th>
 			<td>
 			<select id="wph_fcbk_type" name="wph_fcbk_type">
-			<option value="standard"<?php if($wph_fcbk_type=='standard'){ echo ' selected="selected"';} ?>>スタンダード (いいね！ボタン＋水平方向にテキストやアイコンを表示)</option>
-			<option value="box_count"<?php if($wph_fcbk_type=='box_count'){ echo ' selected="selected"';} ?>>バーティカル (いいね！ボタン＋素直方向にカウント数を表示)</option>
-			<option value="button_count"<?php if($wph_fcbk_type=='button_count'){ echo ' selected="selected"';} ?>>シンプル (いいね！ボタン＋水平方向にカウント数を表示)</option>
+			<option value="standard"<?php if($wph_fcbk_type=='standard'){ echo ' selected="selected"';} ?>>横長スタンダード (いいね！ボタン＋ボタン横にテキストやアイコンを表示)</option>
+			<option value="box_count"<?php if($wph_fcbk_type=='box_count'){ echo ' selected="selected"';} ?>>縦長表示 (いいね！ボタン＋ボタン上にカウント数を表示)</option>
+			<option value="button_count"<?php if($wph_fcbk_type=='button_count'){ echo ' selected="selected"';} ?>>横長シンプル (いいね！ボタン＋ボタン横にカウント数を表示)</option>
 			</select>
-			<p>スタンダード: Minimum width: 225 pixels. Default width: 450 pixels. Height: 35 pixels (without photos) or 80 pixels (with photos).<br />
-				バーティカル: Minimum width: 55 pixels. Default width: 55 pixels. Height: 65 pixels.<br />
-				シンプル: Minimum width: 90 pixels. Default width: 90 pixels. Height: 20 pixels.
+			<p>横長スタンダード: Minimum width: 225 pixels. Default width: 450 pixels. Height: 35 pixels (without photos) or 80 pixels (with photos).<br />
+				縦長表示: Minimum width: 55 pixels. Default width: 55 pixels. Height: 65 pixels.<br />
+				横長シンプル: Minimum width: 90 pixels. Default width: 90 pixels. Height: 20 pixels.
 			</p>
 			</td>
 			</tr>
 			<tr>
+			<th>Facebook いいね！ <br />シェアボタンも一緒に表示</th>
+			<td>
+			<select id="wph_fcbk_share" name="wph_fcbk_share">
+			<option value="true"<?php if($wph_fcbk_share == 'true'){echo ' selected="selected"';} ?>>シェアボタンも一緒に表示する</option>
+			<option value="false"<?php if($wph_fcbk_share == 'false'){echo ' selected="selected"';} ?>>シェアボタンは表示しない</option>
+			</select>
+			</td>
+			</tr>
+			<tr>
 			<th>Facebook いいね！<br />ボタンの横幅</th>
-			<td><input type="text" name="wph_fcbk_width" value="<?php echo get_option('wph_fcbk_width'); ?>" style="width: 400px;" /> px</td>
+			<td><input type="text" name="wph_fcbk_width" value="<?php echo get_option('wph_fcbk_width'); ?>" style="width: 100px;" /> px</td>
 			</tr>
 
 			<tr>
@@ -170,6 +183,17 @@ function WpHatenaPluginView()
 			</tr>
 
 			<tr>
+			<th>Pocket<br />表示タイプ</th>
+			<td>
+			<select id="wph_pckt_type" name="wph_pckt_type">
+			<option value="none"<?php if($wph_pckt_type == 'none'){ echo ' selected="selected"';} ?>>ボタンのみ (Pocketボタンのみで保存数は表示されません)</option>
+			<option value="horizontal"<?php if($wph_pckt_type=='horizontal'){ echo ' selected="selected"';} ?>>横長表示 (Pocketボタン＋ボタン横にブックマーク数を表示)</option>
+			<option value="vertical"<?php if($wph_pckt_type=='vertical'){ echo ' selected="selected"';} ?>>縦長表示 (大きめサイズのPocketボタン＋ボタン上に保存数を表示）</option>
+			</select>
+			</td>
+			</tr>
+
+			<tr>
 			<th>mixi チェック<br />mixi key</th>
 			<td>
 			<input type="text" name="wph_mixi_key" value="<?php echo get_option('wph_mixi_key'); ?>" style="width: 400px;" />
@@ -188,7 +212,7 @@ function WpHatenaPluginView()
 			</table>
 
 			<input type="hidden" name="action" value="update" />
-			<input type="hidden" name="page_options" value="wph_hatebu_type,wph_twitter_type,wph_ever_blogname, wph_ever_clip_id, wph_ever_add, wph_fcbk_type, wph_fcbk_width, wph_mixi_key, wph_img_path, wph_googleplusone_size, wph_googleplusone_displaycounter" />
+			<input type="hidden" name="page_options" value="wph_hatebu_type,wph_twitter_type,wph_ever_blogname, wph_ever_clip_id, wph_ever_add, wph_fcbk_type, wph_fcbk_share, wph_fcbk_width, wph_mixi_key, wph_img_path, wph_googleplusone_size, wph_googleplusone_displaycounter, wph_pckt_type" />
 			<p class="submit">
 				<input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" />
 			</p>
@@ -262,18 +286,22 @@ class WpHatena {
 		$this->ever_clip_id     = get_option('wph_ever_clip_id');
 		$this->ever_add         = get_option('wph_ever_add');
 		$this->fcbk_type        = get_option('wph_fcbk_type');
+		$this->fcbk_share       = get_option('wph_fcbk_share');
 		$this->fcbk_width       = get_option('wph_fcbk_width');
 		$this->mixi_key         = get_option('wph_mixi_key');
 		$this->img_path         = get_option('wph_img_path');
 		$this->googleplusone_size = get_option('wph_googleplusone_size');
 		$this->googleplusone_displaycounter = get_option('wph_googleplusone_displaycounter');
+		$this->pckt_type        = get_option('wph_pckt_type');
 		
-		if ($this->hatebu_type==null)  { $this->hatebu_type  = 'simple';}
-		if ($this->twitter_type==null) { $this->twitter_type = 'none';}
-		if ($this->fcbk_type==null)    { $this->fcbk_type    = 'button_count';}
-		if ($this->img_path==null)     { $this->img_path     = $this->wp_plugin_url("wp-hatena") . 'img/';}
-		if ($this->googleplusone_size==null) { $this->googleplusone_size = 'default';}
-		if ($this->googleplusone_displaycounter==null) { $this->googleplusone_displaycounter = 'yes';}
+		if ($this->hatebu_type == null)  { $this->hatebu_type  = 'simple';}
+		if ($this->twitter_type == null) { $this->twitter_type = 'none';}
+		if ($this->fcbk_type == null)    { $this->fcbk_type    = 'button_count';}
+		if ($this->fcbk_share == null)    { $this->fcbk_share    = 'false';}
+		if ($this->img_path == null)     { $this->img_path     = $this->wp_plugin_url("wp-hatena") . 'img/';}
+		if ($this->googleplusone_size == null) { $this->googleplusone_size = 'default';}
+		if ($this->googleplusone_displaycounter == null) { $this->googleplusone_displaycounter = 'yes';}
+		if ($this->pckt_type == null)    { $this->pckt_type    = 'none';}
 		if (!is_admin()) {
 			add_action('wp_head', array(&$this, 'echoCss'));
 			add_action('wp_footer', array(&$this, 'JSLazyLoading'));
@@ -331,16 +359,6 @@ class WpHatena {
 	 * @return none (Livedoor Clip用のタグを echo)
 	 */
 	function addLivedoor() {
-		
-		$title = $this->utf8_encode(get_the_title());
-		
-		echo
-			$this->makeBookmarkURL(
-				'Livedoor Clip',
-				'http://clip.livedoor.com/clip/add?link=' . get_permalink() . '&amp;title=' . urlencode($title) . '&amp;jump=ref',
-				'livedoor.gif'
-			);
-		
 	}
 	
 	/**
@@ -369,16 +387,6 @@ class WpHatena {
 	 * @return none (FC2ブックマーク用のタグを echo)
 	 */
 	function addFC2() {
-		
-		$title = $this->utf8_encode(get_the_title());
-		
-		echo
-			$this->makeBookmarkURL(
-				'FC2ブックマーク',
-				'http://bookmark.fc2.com/user/post?url=' . get_permalink() . '&amp;title=' . urlencode($title),
-				'fc2.gif'
-			);
-		
 	}
 	
 	/**
@@ -388,16 +396,6 @@ class WpHatena {
 	 * @return none (Nifty用のタグを echo)
 	 */
 	function addNifty() {
-		
-		$title = $this->utf8_encode(get_the_title());
-		
-		echo
-			$this->makeBookmarkURL(
-				'Nifty Clip',
-				'http://clip.nifty.com/create?url=' . get_permalink() . '&amp;title=' . urlencode($title),
-				'nifty.gif'
-			);
-		
 	}
 	
 	/**
@@ -407,16 +405,6 @@ class WpHatena {
 	 * @return none (POOKMARK用のタグを echo)
 	 */
 	function addPOOKMARK() {
-		
-		$title = $this->utf8_encode(get_the_title());
-		
-		echo
-			$this->makeBookmarkURL(
-				'POOKMARK. Airlines',
-				'http://pookmark.jp/post?url=' . get_permalink() . '&amp;title=' . urlencode($title),
-				'pookmark.gif'
-			);
-		
 	}
 	
 	/**
@@ -445,16 +433,6 @@ class WpHatena {
 	 * @return none (Choix用のタグを echo)
 	 */
 	function addChoix() {
-		
-		$title = $this->utf8_encode(get_the_title());
-		
-		echo
-			$this->makeBookmarkURL(
-				'Choix',
-				'http://www.choix.jp/bloglink/' . get_permalink(),
-				'choix.gif'
-			);
-		
 	}
 	
 	/**
@@ -620,20 +598,20 @@ class WpHatena {
 	 */
 	function addFacebookShare() {
 		
-		$title = $this->utf8_encode(get_the_title());
-		
-		echo
-			$this->makeTag(
-				//href, class, otheratt, pagetitle, img, alt, script, lazy_loading
-				'http://www.facebook.com/sharer.php',
-				'wph fcbk_share',
-				' expr:share_url="data:post.url" name="fb_share" type="button_count" share_url="' . get_permalink() . '"',
-				'',
-				false,
-				'シェア',
-				'<script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script>',
-				true
-			);
+//		$title = $this->utf8_encode(get_the_title());
+//		
+//		echo
+//			$this->makeTag(
+//				//href, class, otheratt, pagetitle, img, alt, script, lazy_loading
+//				'http://www.facebook.com/sharer.php',
+//				'wph fcbk_share',
+//				' expr:share_url="data:post.url" name="fb_share" type="button_count" share_url="' . get_permalink() . '"',
+//				'',
+//				false,
+//				'シェア',
+//				'<script src="http://static.ak.fbcdn.net/connect.php/js/FB.Share" type="text/javascript"></script>',
+//				true
+//			);
 	}
 	
 	/**
@@ -665,26 +643,41 @@ class WpHatena {
 	 * WP interface.
 	 * 
 	 * @param none
-	 * @return none (Read It Later 用のタグを echo)
+	 * @return none (Pocket *旧Read It Later* 用のタグを echo)
 	 */
 	function addReadItLater() {
 		
-		$title = $this->utf8_encode(get_the_title());
-		
-		echo
-			$this->makeTag(
-				//href, class, otheratt, pagetitle, img, alt, script, lazy_loading
-				'http://readitlaterlist.com/edit?BL=&url=' . get_permalink() . '&amp;title=' . urlencode($title),
-				'wph',
-				' target="_blank"',
-				'',
-				$this->img_path . 'readitlater.gif',
-				'Read It Later に保存する',
-				'',
-				''
-			);
+//		$title = $this->utf8_encode(get_the_title());
+//		
+//		echo
+//			$this->makeTag(
+//				//href, class, otheratt, pagetitle, img, alt, script, lazy_loading
+//				'http://readitlaterlist.com/edit?BL=&url=' . get_permalink() . '&amp;title=' . urlencode($title),
+//				'wph',
+//				' target="_blank"',
+//				'',
+//				$this->img_path . 'readitlater.gif',
+//				'Read It Later に保存する',
+//				'',
+//				''
+//			);
 	}
 	
+	/**
+	 * WP interface.
+	 * 
+	 * @param none
+	 * @return none (Pocket *旧Read It Later* 用のタグを echo)
+	 */
+	function addPocket() {
+		$url = $this->utf8_encode(get_permalink());
+
+		echo
+			$this->makePocketTag(
+				$url
+			);
+	}
+
 	/**
 	 * WP interface.
 	 *
@@ -783,7 +776,9 @@ class WpHatena {
 		$tag .= ' title="' . $alt . '"';
 		$tag .= $otheratt;
 		$tag .= '>';
-		if ($iconfile !== FALSE) {
+		//if ($iconfile == null) {
+		if (count($iconfile) > 0) {
+		//if ($iconfile !== FALSE) {
 			$tag .= '<img';
 			$tag .= ' src="' . $iconfile . '"';
 			$tag .= ' alt="' . $alt . '"';
@@ -835,13 +830,13 @@ class WpHatena {
 	 */
 	function makeFacebookTag($url) {
 		
-		if ($this->fcbk_type=='button_count') {
+		if ($this->fcbk_type == 'button_count') {
 			$height = 20;
 			if ($this->fcbk_width == null) {
 				$this->fcbk_width = 90;
 			}
 		}
-		elseif ($fcbk_type=='standard') {
+		elseif ($fcbk_type == 'standard') {
 			$height = 80;
 			if ($this->fcbk_width == null) {
 				$this->fcbk_width = 225;
@@ -856,7 +851,7 @@ class WpHatena {
 		
 		$tag  = '<iframe';
 		$tag .= ' src="' . $url;
-		$tag .= '&amp;layout=' . $this->fcbk_type . '&amp;show_faces=true&amp;width=' . $this->fcbk_width . '&amp;action=like&amp;colorscheme=light&amp;height=' . $height . '" scrolling="no" frameborder="0" class="wph facebook" allowTransparency="true"';
+		$tag .= '&amp;layout=' . $this->fcbk_type . '&amp;show_faces=true&amp;width=' . $this->fcbk_width . '&amp;share=' . $this->fcbk_share . '&amp;action=like&amp;colorscheme=light&amp;height=' . $height . '" scrolling="no" frameborder="0" class="wph facebook" allowTransparency="true"';
 		$tag .= ' style="width:' . $this->fcbk_width . 'px; height:' . $height . 'px;"';
 		$tag .= '>';
 		$tag .= '</iframe>';
@@ -905,6 +900,22 @@ class WpHatena {
 		$tag .= ' scrolling="no" frameborder="0" marginwidth="0" marginheight="0" style="border:none; overflow:hidden; width:100px; height:20px;" allowTransparency="true"';
 		$tag .= '>';
 		$tag .= '</iframe>';
+		
+		return $tag;
+	}
+
+	/**
+	 * for Pocket btn.
+	 * 
+	 * @param $url (URL)
+	 * @return $tag (リンクタグ)
+	 */
+	function makePocketTag($url) {
+
+		$tag  = '<a data-pocket-label="pocket" data-pocket-count="' . $this->pckt_type . '" class="pocket-btn" data-lang="en"';
+		$tag .= ' data-save-url="' . $url . '">';
+		$tag .= '</a>';
+		$tag .= '<script type="text/javascript">!function(d,i){if(!d.getElementById(i)){var j=d.createElement("script");j.id=i;j.src="https://widgets.getpocket.com/v1/j/btn.js?v=1";var w=d.getElementById(i);d.body.appendChild(j);}}(document,"pocket-btn-js");</script>';
 		
 		return $tag;
 	}
@@ -964,5 +975,5 @@ class WpHatena {
  * wp-hatena - WordPress function Define
  *****************************************************************************/
 
-$wph = & new WpHatena();
+$wph = new WpHatena();
 ?>
